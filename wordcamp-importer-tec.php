@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name:       Import the WordCamp Schedule to The Events Calendar
- * Plugin URI:        @TODO
+ * Plugin URI:        https://github.com/bamadesigner/wordcamp-importer-tec
  * Description:       Imports the WordCamp schedule as events for The Events Calendar WordPress plugin.
  * Version:           1.0.0
  * Author:            Rachel Carden
@@ -13,15 +13,15 @@
  * Domain Path:       /languages
  */
 
+// @TODO setup process to check each event to see if it needs to be deleted
+
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
 // If you define them, will they be used?
-define( 'WORDCAMP_IMPORTER_TEC_VERSION', '1.1.0' );
-define( 'WORDCAMP_IMPORTER_TEC_PLUGIN_URL', '' ); //@TODO
-define( 'WORDCAMP_IMPORTER_TEC_PLUGIN_FILE', 'wordcamp-importer-tec/wordcamp-importer-tec.php' );
+define( 'WORDCAMP_IMPORTER_TEC_VERSION', '1.0.0' );
 
 class WordCamp_Importer_TEC {
 
@@ -128,14 +128,15 @@ class WordCamp_Importer_TEC {
 	public function check_import_wordcamp_schedule() {
 
 		// See if we need to check the import
-		$check_import = get_transient( 'wordcamp_importer_tec_check_import' );
+		$check_import_transient = 'wordcamp_importer_tec_check_import';
+		$check_import = get_transient( $check_import_transient );
 		if ( $check_import === false ) {
 
 			// Import the schedule
 			$this->import_wordcamp_schedule();
 
 			// Only check the schedule once a day
-			set_transient( 'wordcamp_importer_tec_check_import', time(), DAY_IN_SECONDS );
+			set_transient( $check_import_transient, time(), DAY_IN_SECONDS );
 
 		}
 
