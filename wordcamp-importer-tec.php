@@ -274,13 +274,18 @@ class WordCamp_Importer_TEC {
 					}
 
 					// Create the event
-					else if ( $event_id = tribe_create_event( $event_args ) ) {
+					else if ( $event_post_id = tribe_create_event( $event_args ) ) {
 
 						// Store the WordCamp ID
-						if ( $event_id > 0 ) {
-							add_post_meta( $event_id, '_wordcamp_id', $event->ID, true );
+						if ( $event_post_id > 0 ) {
+							add_post_meta( $event_post_id, '_wordcamp_id', $event->ID, true );
 						}
 
+					}
+
+					// Make sure the category is set
+					if ( $event_post_id > 0 ) {
+						wp_set_object_terms( $event_post_id, 'wordcamps', 'tribe_events_cat', true );
 					}
 
 				}
