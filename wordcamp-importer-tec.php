@@ -127,6 +127,11 @@ class WordCamp_Importer_TEC {
 	 */
 	public function check_import_wordcamp_schedule() {
 
+		// There's no point if TEC doesn't exist
+		if ( ! function_exists( 'tribe_create_event' ) ) {
+			return false;
+		}
+
 		// See if we need to check the import
 		$check_import_transient = 'wordcamp_importer_tec_check_import';
 		$check_import = get_transient( $check_import_transient );
