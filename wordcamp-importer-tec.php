@@ -151,6 +151,11 @@ class WordCamp_Importer_TEC {
 	public function import_wordcamp_schedule() {
 		global $wpdb;
 
+		// There's no point if TEC doesn't exist
+		if ( ! function_exists( 'tribe_create_event' ) ) {
+			return false;
+		}
+
 		// Get the schedule
 		if ( ( $response = wp_remote_get( 'https://central.wordcamp.org/wp-json/posts?type=wordcamp&filter[posts_per_page]=30' ) )
 			&& ( $body = wp_remote_retrieve_body( $response ) )
