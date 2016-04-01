@@ -278,6 +278,11 @@ class WordCamp_Importer_TEC {
 
 						// Update the event
 						if ( $event_post_id > 0 ) {
+
+							// @TODO Don't update the post content
+							// until I figure out how to not override changes
+							unset( $event_args[ 'post_content' ] );
+
 							tribe_update_event( $event_post_id, $event_args );
 						}
 
