@@ -42,11 +42,11 @@ class WordCamp_Importer_TEC {
 	 * @return	WordCamp_Importer_TEC
 	 */
 	public static function instance() {
-		if ( ! isset( static::$instance ) ) {
+		if ( ! isset( self::$instance ) ) {
 			$className = __CLASS__;
-			static::$instance = new $className;
+			self::$instance = new $className;
 		}
-		return static::$instance;
+		return self::$instance;
 	}
 
 	/**
