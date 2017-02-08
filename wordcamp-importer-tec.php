@@ -43,8 +43,8 @@ class WordCamp_Importer_TEC {
 	 */
 	public static function instance() {
 		if ( ! isset( self::$instance ) ) {
-			$className = __CLASS__;
-			self::$instance = new $className;
+			$class_name = __CLASS__;
+			self::$instance = new $class_name;
 		}
 		return self::$instance;
 	}
@@ -135,7 +135,7 @@ class WordCamp_Importer_TEC {
 		// See if we need to check the import
 		$check_import_transient = 'wordcamp_importer_tec_check_import';
 		$check_import = get_transient( $check_import_transient );
-		if ( $check_import === false ) {
+		if ( false === $check_import ) {
 
 			// Import the schedule
 			$this->import_wordcamp_schedule();
@@ -172,10 +172,10 @@ class WordCamp_Importer_TEC {
 			// Set datetime format
 			$date_format = 'Y-m-d'; // H:i:s';
 
-			foreach( $schedule as $event ) {
+			foreach ( $schedule as $event ) {
 
 				// Get post ID
-				$event_post_id = in_array( $event->ID, $wordcamp_ids ) ? $wpdb->get_var( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_wordcamp_id' AND meta_value = '{$event->ID}'" ) : false;
+				$event_post_id = in_array( $event->ID, $wordcamp_ids ) ? $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_wordcamp_id' AND meta_value = %s", $event->ID ) ) : false;
 
 				// Setup event args
 				$event_args = array(
@@ -193,7 +193,7 @@ class WordCamp_Importer_TEC {
 				$event_venue = array();
 
 				// Process all the meta
-				foreach( $event->post_meta as $meta ) {
+				foreach ( $event->post_meta as $meta ) {
 
 					// Get meta value
 					$meta_value = $meta->value;
@@ -208,25 +208,18 @@ class WordCamp_Importer_TEC {
 							$start_date = new DateTime( date( 'Y-m-d', $meta_value ), $event_timezone );
 
 							// Store for event
-							$event_args[ 'EventStartDate' ] = $start_date->format( $date_format );
+							$event_args['EventStartDate'] = $start_date->format( $date_format );
 
-						}
-
-						// If no start date...
-						else {
+						} else {
 
 							// Change status to draft since no start date
-							$event_args[ 'post_status' ] = 'draft';
+							$event_args['post_status'] = 'draft';
 
 							// No start date
-							$event_args[ 'EventStartDate' ] = null;
+							$event_args['EventStartDate'] = null;
 
 						}
-
-					}
-
-					// Get end date
-					else if ( preg_match( '/^End\sDate/i', $meta->key ) ) {
+					} elseif ( preg_match( '/^End\sDate/i', $meta->key ) ) {
 
 						// We must have a value
 						if ( $meta_value ) {
@@ -235,78 +228,67 @@ class WordCamp_Importer_TEC {
 							$end_date = new DateTime( date( 'Y-m-d', $meta_value ), $event_timezone );
 
 							// Store for event
-							$event_args[ 'EventEndDate' ] = $end_date->format( $date_format );
+							$event_args['EventEndDate'] = $end_date->format( $date_format );
 
 						}
-
-					}
-
-					// If we have a value
-					else if ( $meta_value ) {
+					} elseif ( $meta_value ) {
 
 						switch ( $meta->key ) {
 
 							case 'URL':
-								$event_args[ '_EventURL' ] = $meta_value;
+								$event_args['_EventURL'] = $meta_value;
 								break;
 
 							case 'Venue Name':
-								$event_venue[ 'Venue' ] = $meta_value;
+								$event_venue['Venue'] = $meta_value;
 								break;
 
 						}
-
 					}
-
 				}
 
 				// If we have event info
 				if ( ! empty( $event_venue ) ) {
-					$event_args[ 'Venue' ] = $event_venue;
+					$event_args['Venue'] = $event_venue;
 				}
 
 				// If we have event info...
 				if ( ! empty( $event_args ) ) {
 
 					// Make sure we have an end date
-					if ( ! $event_args[ 'EventEndDate' ] ) {
-						$event_args[ 'EventEndDate' ] = $event_args[ 'EventStartDate' ];
+					if ( ! $event_args['EventEndDate'] ) {
+						$event_args['EventEndDate'] = $event_args['EventStartDate'];
 					}
 
-					// Update the event
+					// Update or create the event
 					if ( in_array( $event->ID, $wordcamp_ids ) ) {
 
 						// Update the event
 						if ( $event_post_id > 0 ) {
 
-							// @TODO Don't update the post content
-							// until I figure out how to not override changes
-							unset( $event_args[ 'post_content' ] );
+							/*
+							 * @TODO:
+							 * Don't update the post content until
+							 * I figure out how to not override changes
+							 */
+							unset( $event_args['post_content'] );
 
 							tribe_update_event( $event_post_id, $event_args );
 						}
-
-					}
-
-					// Create the event
-					else if ( $event_post_id = tribe_create_event( $event_args ) ) {
+					} elseif ( $event_post_id = tribe_create_event( $event_args ) ) {
 
 						// Store the WordCamp ID
 						if ( $event_post_id > 0 ) {
 							add_post_meta( $event_post_id, '_wordcamp_id', $event->ID, true );
 						}
-
 					}
 
 					// Make sure the category is set
 					if ( $event_post_id > 0 ) {
 						wp_set_object_terms( $event_post_id, 'wordcamps', 'tribe_events_cat', true );
 					}
-
 				}
-
 			}
-
 		}
 
 	}

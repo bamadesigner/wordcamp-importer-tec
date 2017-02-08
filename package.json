@@ -1,0 +1,19 @@
+{
+  "name": "wordcamp-importer-tec",
+  "version": "1.0.0",
+  "description": "Imports the WordCamp schedule as events for The Events Calendar WordPress plugin.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bamadesigner/wordcamp-importer-tec.git"
+  },
+  "author": "Rachel Carden",
+  "license": "GPL-2.0+",
+  "bugs": {
+    "url": "https://github.com/bamadesigner/wordcamp-importer-tec/issues"
+  },
+  "homepage": "https://github.com/bamadesigner/wordcamp-importer-tec#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-phpcs": "^1.4.0"
+  }
+}
