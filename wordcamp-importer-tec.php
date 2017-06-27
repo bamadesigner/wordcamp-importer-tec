@@ -256,7 +256,7 @@ class WordCamp_Importer_TEC {
 				if ( ! empty( $event_args ) ) {
 
 					// Make sure we have an end date
-					if ( ! $event_args['EventEndDate'] ) {
+					if ( empty( $event_args['EventEndDate'] ) ) {
 						$event_args['EventEndDate'] = $event_args['EventStartDate'];
 					}
 
