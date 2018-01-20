@@ -5,7 +5,7 @@
  * Plugin URI:        https://github.com/bamadesigner/wordcamp-importer-tec
  * Description:       Imports the WordCamp schedule as events for The Events Calendar WordPress plugin.
  * Version:           1.0.0
- * Author:            Rachel Carden
+ * Author:            Rachel Cherry
  * Author URI:        https://bamadesigner.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
